@@ -16,7 +16,10 @@ package main
 import (
 	"encoding/json"
 	"flag"
-	elastigo "github.com/mattbaird/elastigo/lib"
+	"github.com/mattbaird/elastigo/api"
+	"github.com/mattbaird/elastigo/cluster"
+	"github.com/mattbaird/elastigo/core"
+	"github.com/mattbaird/elastigo/indices"
 	"log"
 	"time"
 )
@@ -29,13 +32,12 @@ var (
 func main() {
 	flag.Parse()
 	log.SetFlags(log.Ltime | log.Lshortfile)
-
-	c := elastigo.NewConn()
-	c.Domain = *eshost
-	response, _ := c.Index("twitter", "tweet", "1", nil, NewTweet("kimchy", "Search is cool"))
-	c.Flush()
+	api.Domain = *eshost
+	core.VerboseLogging = true
+	response, _ := core.Index("twitter", "tweet", "1", nil, NewTweet("kimchy", "Search is cool"))
+	indices.Flush()
 	log.Printf("Index OK: %v", response.Ok)
-	searchresponse, err := c.Search("twitter", "tweet", nil, "{\"query\" : {\"term\" : { \"user\" : \"kimchy\" }}}")
+	searchresponse, err := core.SearchRequest("twitter", "tweet", nil, "{\"query\" : {\"term\" : { \"user\" : \"kimchy\" }}}")
 	if err != nil {
 		log.Println("error during search:" + err.Error())
 		log.Fatal(err)
@@ -48,23 +50,23 @@ func main() {
 	}
 	json.Unmarshal(bytes, t)
 	log.Printf("Search Found: %s", t)
-	response, _ = c.Get("twitter", "tweet", "1", nil)
+	response, _ = core.Get("twitter", "tweet", "1", nil)
 	log.Printf("Get: %v", response.Exists)
-	exists, _ := c.Exists("twitter", "tweet", "1", nil)
+	exists, _ := core.Exists("twitter", "tweet", "1", nil)
 	log.Printf("Exists: %v", exists)
-	c.Flush()
-	countResponse, _ := c.Count("twitter", "tweet", nil, nil)
-
+	indices.Flush()
+	countResponse, _ := core.Count("twitter", "tweet", nil)
 	log.Printf("Count: %v", countResponse.Count)
-	response, _ = c.Delete("twitter", "tweet", "1", map[string]interface{}{"version": -1, "routing": ""})
+	response, _ = core.Delete("twitter", "tweet", "1", map[string]interface{}{"version": -1, "routing": ""})
 	log.Printf("Delete OK: %v", response.Ok)
-	response, _ = c.Get("twitter", "tweet", "1", nil)
+	response, _ = core.Get("twitter", "tweet", "1", nil)
 	log.Printf("Get: %v", response.Exists)
 
-	healthResponse, _ := c.Health()
+	healthResponse, _ := cluster.Health()
 	log.Printf("Health: %v", healthResponse.Status)
 
-	c.UpdateSettings("transient", "discovery.zen.minimum_master_nodes", 2)
+	cluster.UpdateSettings("transient", "discovery.zen.minimum_master_nodes", 2)
+
 }
 
 // used in test suite, chosen to be similar to the documentation
