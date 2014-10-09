@@ -68,8 +68,8 @@ Adding content to Elasticsearch
 
 examples:
 ```go
-import "github.com/mattbaird/elastigo/api"
-import "github.com/mattbaird/elastigo/core"
+import "github.com/buger/elastigo/api"
+import "github.com/buger/elastigo/core"
 
 type Tweet struct {
   User     string    `json:"user"`
@@ -110,8 +110,8 @@ Search DSL Examples
 A Faceted, ranged Search using the `Search DSL` :
 
 ```go
-import "github.com/mattbaird/elastigo/api"
-import "github.com/mattbaird/elastigo/core"
+import "github.com/buger/elastigo/api"
+import "github.com/buger/elastigo/core"
 
 // Set the Elasticsearch Host to Connect to
 api.Domain = "localhost"
@@ -173,8 +173,8 @@ Adding content to Elasticsearch in Bulk
 example:
 
 ```go
-import "github.com/mattbaird/elastigo/api"
-import "github.com/mattbaird/elastigo/core"
+import "github.com/buger/elastigo/api"
+import "github.com/buger/elastigo/core"
 
 // Set the Elasticsearch Host to Connect to
 api.Domain = "localhost"

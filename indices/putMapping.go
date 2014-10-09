@@ -14,7 +14,7 @@ package indices
 import (
 	"encoding/json"
 	"fmt"
-	api "github.com/mattbaird/elastigo/api"
+	api "github.com/buger/elastigo/api"
 	"reflect"
 	"strings"
 )

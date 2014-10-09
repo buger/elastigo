@@ -13,7 +13,7 @@ package cluster
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/mattbaird/elastigo/api"
+	"github.com/buger/elastigo/api"
 	"strings"
 )
 
